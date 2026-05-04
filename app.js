@@ -5,21 +5,18 @@ const authentication = require('./src/middleware/authentication.js');
 
 const app = express();
 
+// Static folder
 app.use(express.static('public'));
 
+// // Handlebars setup
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './src/views');
+
 app.get('/', (req,res) => {
-    res.send('Hello World!');
+    // res.send('Hello World!');
+    res.render("home");
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
-
-
-// Hilmalle: Poista kommentit näistä, kun express palvelin on luotu (muuttujan nimeksi app)
-// // Handlebars setup
-// app.engine('handlebars', engine());
-// app.set('view engine', 'handlebars');
-// app.set('views', './src/views');
-
-// Hilmalle: Tällä funktiolla renderöi home.handlebars-tiedoston
-// res.render("home");
