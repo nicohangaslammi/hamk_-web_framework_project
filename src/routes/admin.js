@@ -4,3 +4,4 @@ const router = express.Router();
 const authentication = require('../middleware/authentication');
 const DrawRound = require('../models/DrawRound');
 
+module.exports = router;
