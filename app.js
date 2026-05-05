@@ -1,7 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const { engine } = require('express-handlebars');
 require('dotenv').config();
 const authentication = require('./src/middleware/authentication.js');
+const DrawRound = require('./src/models/DrawRound');
 
 const app = express();
 
@@ -18,5 +20,14 @@ app.get('/', (req,res) => {
     res.render("home");
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+// app.post placehoder
+
+mongoose.connect(process.env.MONGODB_URI)
+.then((result) =>
+    {
+    console.log("Connected to dB")
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    })
+.catch((err) => console.log(err));
+
