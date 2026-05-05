@@ -2,8 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { engine } = require('express-handlebars');
 require('dotenv').config();
-const authentication = require('./src/middleware/authentication.js');
-const DrawRound = require('./src/models/DrawRound');
+
+// Import admin routes
+const adminRoutes = require('./src/routes/admin');
 
 const app = express();
 
@@ -20,10 +21,11 @@ app.get('/', (req,res) => {
     res.render("home");
 });
 
-// app.post placehoder
+// Admin API routes 
+app.use('/api/admin', adminRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
-.then((result) =>
+.then(() =>
     {
     console.log("Connected to dB")
     const PORT = process.env.PORT || 3000;
