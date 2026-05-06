@@ -31,7 +31,7 @@ router.post('/add_dummy_guesses_to_active_round/:amount', async (req, res) => {
         console.log(`added ${amount} dummy guesses`);
         res.sendStatus(200);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.sendStatus(500);
     }
 });
