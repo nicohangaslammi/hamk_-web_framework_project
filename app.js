@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const { engine } = require('express-handlebars');
 require('dotenv').config();
 
-// Import admin routes
+// Import routes
 const adminRoutes = require('./src/routes/admin');
+const roundsRoutes = require('./src/routes/rounds');
 
 // Middleware
 const authentication = require('./src/middleware/authentication');
@@ -29,8 +30,9 @@ app.get('/draw-closed', (req,res) => {
     res.render('draw-closed');
 });
 
-// Admin API routes 
+// API routes 
 app.use('/api/admin', authentication, adminRoutes);
+app.use('/api/rounds', roundsRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() =>
