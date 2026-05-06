@@ -16,9 +16,14 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
 
+// Home
 app.get('/', (req,res) => {
-    // res.send('Hello World!');
     res.render("home");
+});
+
+// Draw is closed
+app.get('/draw-closed', (req,res) => {
+    res.render('draw-closed');
 });
 
 // Admin API routes 
