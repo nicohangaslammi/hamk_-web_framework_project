@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const authentication = require('../middleware/authentication');
 const DrawRound = require('../models/DrawRound');
 
-router.post('/rounds', authentication, async (req,res) => {
+router.post('/rounds', async (req,res) => {
     try {
         const activeRound = await DrawRound.findOne({ status: 'auki' });
         if (activeRound) {
@@ -18,6 +17,7 @@ router.post('/rounds', authentication, async (req,res) => {
         res.send("Draw created!");
         }
     catch (error) {
+        console.error(error);
         res.status(500).json({
             msg: 'error'
         });

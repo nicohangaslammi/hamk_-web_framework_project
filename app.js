@@ -6,6 +6,9 @@ require('dotenv').config();
 // Import admin routes
 const adminRoutes = require('./src/routes/admin');
 
+// Middleware
+const authentication = require('./src/middleware/authentication');
+
 const app = express();
 
 // Static folder
@@ -27,7 +30,7 @@ app.get('/draw-closed', (req,res) => {
 });
 
 // Admin API routes 
-app.use('/api/admin', adminRoutes);
+app.use('/api/admin', authentication, adminRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() =>
