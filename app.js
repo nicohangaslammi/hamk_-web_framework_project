@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import routes
 const adminRoutes = require('./src/routes/admin');
 const roundsRoutes = require('./src/routes/rounds');
+const guessesRoutes = require('./src/routes/guesses');
 const devRoutes = require('./src/routes/dev');
 
 // Middleware
@@ -31,9 +32,13 @@ app.get('/draw-closed', (req,res) => {
     res.render('draw-closed');
 });
 
+// Enable JSON parser
+app.use(express.json());
+
 // API routes 
 app.use('/api/admin', authentication, adminRoutes);
 app.use('/api/rounds', roundsRoutes);
+app.use('/api/guesses', guessesRoutes);
 
 // Dev API routes if in development environment
 if (process.env.NODE_ENV === 'development') {
