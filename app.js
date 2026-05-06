@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import routes
 const adminRoutes = require('./src/routes/admin');
 const roundsRoutes = require('./src/routes/rounds');
+const devRoutes = require('./src/routes/dev');
 
 // Middleware
 const authentication = require('./src/middleware/authentication');
@@ -33,6 +34,12 @@ app.get('/draw-closed', (req,res) => {
 // API routes 
 app.use('/api/admin', authentication, adminRoutes);
 app.use('/api/rounds', roundsRoutes);
+
+// Dev API routes if in development environment
+if (process.env.NODE_ENV === 'development') {
+    app.use('/api/dev', authentication, devRoutes);
+    console.log("enabled development routes");
+}
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() =>
