@@ -9,7 +9,7 @@ const DrawRound = require('../models/DrawRound');
 const Guess = require('../models/Guess');
 
 // Create an active draw round as admin
-router.post('/rounds', authentication, async (req,res) => {
+router.post('/', authentication, async (req,res) => {
     try {
         const activeRound = await DrawRound.findOne({ status: 'auki' });
         if (activeRound) {
