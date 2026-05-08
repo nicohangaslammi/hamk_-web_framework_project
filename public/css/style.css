@@ -6,3 +6,21 @@
     text-align: center;
     min-height: 100vh;
 }
+
+.draw-closed h1 {
+    margin-bottom: 10px;
+}
+
+.draw-closed p {
+    margin: 0;
+}
+
+.button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    text-decoration: none;
+    margin-top: 20px;
+}
