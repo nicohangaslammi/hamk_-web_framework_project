@@ -66,6 +66,8 @@ router.patch('/', authentication, async (req,res) => {
         //Random winning number 
         let winningNumber = Math.floor((Math.random() * 100) + 1);
         round.winning_number = winningNumber;
+        // Draw execution date
+        round.draw_time = new Date();
         // Close draw
         round.status = 'suljettu';
         await round.save();
