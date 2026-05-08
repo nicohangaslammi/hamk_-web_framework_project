@@ -13,7 +13,7 @@ router.post('/', authentication, async (req,res) => {
     try {
         const activeRound = await DrawRound.findOne({ status: 'auki' });
         if (activeRound) {
-            return res.send("Draw is already running!");
+            return res.status(400).send("Draw is already running!");
         }
         const newRound = new DrawRound({
             status: 'auki',
@@ -53,6 +53,28 @@ router.get('/', async (req,res) => {
     catch (error) {
         console.error(error);
         res.sendStatus(500);
+    }
+});
+
+// Start draw as admin
+router.patch('/', authentication, async (req,res) => {
+    try {
+        const round = await DrawRound.findOne({ status: 'auki' });
+        if (!round) {
+            return res.sendStatus(404);
+        }
+        // Winning number
+        round.winning_number = 25;
+        // Close draw
+        round.status = 'suljettu';
+        await round.save();
+        res.send("Draw completed!");
+        }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'error'
+        });
     }
 });
 
