@@ -1,8 +1,34 @@
 const express = require('express');
 const router = express.Router();
 
+// Middleware
+const authentication = require('../middleware/authentication');
+
+// Models
 const DrawRound = require('../models/DrawRound');
 const Guess = require('../models/Guess');
+
+// Create an active draw round as admin
+router.post('/rounds', authentication, async (req,res) => {
+    try {
+        const activeRound = await DrawRound.findOne({ status: 'auki' });
+        if (activeRound) {
+            return res.send("Draw is already running!");
+        }
+        const newRound = new DrawRound({
+            status: 'auki',
+            draw_time: new Date()
+        });
+        await newRound.save();
+        res.send("Draw created!");
+        }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'error'
+        });
+    }
+});
 
 // Get active draw round
 router.get('/', async (req,res) => {

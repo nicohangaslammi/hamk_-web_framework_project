@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
+// Middleware
+const authentication = require("../middleware/authentication");
+
+// Models
 const DrawRound = require('../models/DrawRound');
 const Guess = require("../models/Guess");
+
+// Add authentication middleware to every request
+router.use(authentication);
 
 // Create dummy guesses with random numbers. Does not check if number is available
 router.post('/add_dummy_guesses_to_active_round/:amount', async (req, res) => {
