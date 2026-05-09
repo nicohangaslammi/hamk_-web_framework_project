@@ -1,5 +1,3 @@
-// WebSocket functions
-
 // Map object for storing WebSocket connections paired with randomly generated tokens
 const connections = new Map();
 
@@ -10,5 +8,17 @@ const verifySocket = (socketId, token) => {
 
     return (connections.get(socketId) === token);
 }
+
+// Add WebSocket connection id and randomly generated token to connections map
+const addSocketTokenPair = (socketId, token) => {};
+
+// Remove WebSocket connection id and randomly generated token from connections map
+const removeSocketTokenPair = (socketId) => {};
+
+// Generate and return a randomized token using crypto library
+const generateRandomizedToken = () => {};
+
+// Start WebSocket server and start listening for messages
+const initializeSocket = () => {};
 
 module.exports = { verifySocket };
