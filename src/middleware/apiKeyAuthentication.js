@@ -2,7 +2,7 @@ const API_KEY = process.env.API_KEY;
 console.log(API_KEY);
 
 // API key authentication middleware
-const authentication = (req, res, next) => {
+const apiKeyAuthentication = (req, res, next) => {
     const userKey = req.header('x-api-key');
 
     // Return if no API key was given
@@ -16,4 +16,4 @@ const authentication = (req, res, next) => {
     next();
 }
 
-module.exports = authentication;
+module.exports = apiKeyAuthentication;

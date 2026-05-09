@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 // Middleware
-const authentication = require('../middleware/authentication');
+const apiKeyAuthentication = require("../middleware/apiKeyAuthentication");
 
 // Models
 const DrawRound = require('../models/DrawRound');
 const Guess = require('../models/Guess');
 
 // Create an active draw round as admin
-router.post('/', authentication, async (req,res) => {
+router.post('/', apiKeyAuthentication, async (req,res) => {
     try {
         const activeRound = await DrawRound.findOne({ status: 'auki' });
         if (activeRound) {
@@ -57,13 +57,13 @@ router.get('/', async (req,res) => {
 });
 
 // Start draw as admin
-router.patch('/', authentication, async (req,res) => {
+router.patch('/', apiKeyAuthentication, async (req,res) => {
     try {
         const round = await DrawRound.findOne({ status: 'auki' });
         if (!round) {
             return res.sendStatus(404);
         }
-        //Random winning number 
+        // Random winning number 
         let winningNumber = Math.floor((Math.random() * 100) + 1);
         round.winning_number = winningNumber;
         // Draw execution date
