@@ -32,4 +32,35 @@ router.delete('/', [
     }
 });
 
+// Create guess
+router.post('/', async (req, res) => {
+    try {
+        const drawRoundId = req.body.draw_round;
+        const number = req.body.number;
+        // Check if number is taken
+        const guess = await Guess.findOne({ 
+            draw_round: drawRoundId,
+            number: number
+        });
+        if (guess) {
+            return res.status(400).send("Number is already taken");
+        }
+        // Create new guess
+        const newGuess = new Guess({
+            draw_round: drawRoundId,
+            number: number,
+            socket_id: "test"
+        });
+        await newGuess.save();
+        res.status(200).send("Guess created!");
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+        msg: 'error'
+        });
+    }
+});
+
+
 module.exports = router;
