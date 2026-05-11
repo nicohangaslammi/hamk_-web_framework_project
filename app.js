@@ -46,6 +46,7 @@ if (process.env.NODE_ENV === 'development') {
     console.log("enabled development routes");
 }
 
+// Connect to MongoDB and start server 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() =>
     {
