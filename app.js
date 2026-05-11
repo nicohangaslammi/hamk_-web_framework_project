@@ -1,7 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require('http');
 const { engine } = require('express-handlebars');
 require('dotenv').config();
+
+// Socket 
+const { initializeSocket } = require('./src/services/socket');
 
 // Import routes
 const roundsRoutes = require('./src/routes/rounds');
@@ -9,6 +13,7 @@ const guessesRoutes = require('./src/routes/guesses');
 const devRoutes = require('./src/routes/dev');
 
 const app = express();
+const server = http.createServer(app);
 
 // Static folder
 app.use(express.static('public'));
@@ -46,7 +51,8 @@ mongoose.connect(process.env.MONGODB_URI)
     {
     console.log("Connected to dB")
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    initializeSocket(server);
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     })
 .catch((err) => console.log(err));
 
