@@ -3,36 +3,54 @@ const socket = io();
 // Placeholder amount of guesses in a draw round. May be changed dynamically in the future
 const ROUND_GUESS_NUMBER_COUNT = 20;
 
-// Map containing local guess states (open, reserverved-me, reserved-other)
-// Ex. guessStates(1) returns 'open', 'reserved-me' or 'reserved-other'
-const guessStates = new Map();
+// Map containing local guess data.
+// key is the guess number, value is an object with properties 'state' and 'owner'
+// 'state' is either 'reserved-me' or 'reserved-other'
+// 'owner' has the socked id of client who made the guess
+// Ex. guessData.get(2) = { 'state': 'reserved-me', owner: 'V8uOTo85UY9k4BdMAAAD'}
+const guessData = new Map();
 
 // ONLY for debugging purposes. Remove when WebSocket calls updating guess states is implemented.
-guessStates.set(2, "reserved-me");
-guessStates.set(5, "open");
-guessStates.set(9, "reserved-other");
+guessData.set(2, { state: "reserved-me", owner: "test"});
+guessData.set(9, { state: "reserved-other", owner: "test2" });
 
 // Container element for guess buttons
 const guessButtonsElement = document.getElementById("guess-buttons");
 // Array of guess button elements
 let guessButtonsElementArray = new Array();
 
+// Object storing socket_id and token for authentication
+let clientInfo = {};
+
 // When WebSocket connection is established
 socket.on("connect", () => {
-  console.log("Connected to socket:", socket.id);
+    console.log("Connected to socket:", socket.id);
+    clientInfo.socket_id = socket.id;
 });
 
 // Server returns an authentication token shortly after WebSocket connection is established
 socket.on("auth_token", (token) => {
-  console.log("Received token:", token);
+    console.log("Received token:", token);
+    clientInfo.token = token;
 });
 
-socket.on("guess_addition", guessData => {
-    console.log("addition", guessData);
+// Server sends a WebSocket message when other user makes a guess
+socket.on("guess_addition", data => {
+    console.log("addition", data);
+
+    guessData.set(parseInt(data.number), {
+        state: "reserved-other",
+        owner: data.socketId,
+    });
+    updateGuessButtonElements();
 });
 
-socket.on("guess_removal", guessData => {
-    console.log("removal", guessData)
+// Server sends a WebSocket message when other user removes a guess
+socket.on("guess_removal", data => {
+    console.log("removal", data);
+
+    guessData.remove(parseInt(data.number));
+    updateGuessButtonElements();
 })
 
 // When user clicks on a guess button
@@ -63,16 +81,16 @@ const createGuessButtonElements = () => {
 const updateGuessButtonElements = () => {
     guessButtonsElementArray.forEach((buttonElement) => {
         const number = parseInt(buttonElement.value);
-        state = guessStates.get(number);
+        guess = guessData.get(number);
 
         // Remove current state
         buttonElement.classList.remove("open", "reserved-me", "reserved-other");
 
         // Add state css class based on state in guessStates map
-        if (!state) {
-        buttonElement.classList.add("open");
+        if (!guess) {
+            buttonElement.classList.add("open");
         } else {
-        buttonElement.classList.add(state);
+            buttonElement.classList.add(guess.state);
         }
     });
 }
