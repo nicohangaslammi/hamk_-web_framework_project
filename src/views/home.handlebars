@@ -1,6 +1,14 @@
-<main>
-    <section class="home">
-        <h1>Number draw system</h1>
-        <p>Choose a number and join the draw.</p>
+
+<section class="home">
+
+    <section id="draw-closed-view" style="display: none">
+        {{> draw-closed}}
     </section>
-</main>
+
+    <section id="draw-open-view">
+        {{> draw-open}}
+    </section>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

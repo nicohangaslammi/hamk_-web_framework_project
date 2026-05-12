@@ -1,4 +1,4 @@
-.draw-closed {
+.draw-closed-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,12 +7,16 @@
     min-height: 100vh;
 }
 
-.draw-closed h1 {
+.draw-closed-container h1 {
     margin-bottom: 10px;
 }
 
-.draw-closed p {
+.draw-closed-container p {
     margin: 0;
+}
+
+.draw-open-container {
+    text-align: center;
 }
 
 .button {
@@ -23,4 +27,34 @@
     font-size: 16px;
     text-decoration: none;
     margin-top: 20px;
+}
+
+#guess-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 800px;
+    margin: 0 auto;
+}
+
+.guess-button {
+    flex: 0 0 calc((100% - 90px) / 10);
+
+    box-sizing: border-box;
+    width: 90px;
+    padding: 15px 0;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.guess-button.reserved-other {
+    background-color: red;
+}
+
+.guess-button.open {
+    background-color: yellow;
+}
+
+.guess-button.reserved-me {
+    background-color: greenyellow;
 }
