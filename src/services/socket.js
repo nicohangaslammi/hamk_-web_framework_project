@@ -32,16 +32,19 @@ const initializeSocket = (server) => {
     const io = new Server(server);
 
     io.on('connection', (socket) => {
+        // Log socket id connected
         console.log(socket.id);
+        // Generate socket id
+        const token = generateRandomizedToken();
+        // Save socket id and token to Map
+        addSocketTokenPair(socket.id, token);
+        // Send token
+        socket.emit('auth_token', token);
 
-    const token = generateRandomizedToken();
-
-    addSocketTokenPair(socket.id, token);
-
-    socket.emit('auth_token', token);
-
-    socket.on('disconnect', () => {
+        socket.on('disconnect', () => {
+        // Remove socket connection
         removeSocketTokenPair(socket.id);
+        // Log disconnected socket id
         console.log(socket.id);
         });
     });

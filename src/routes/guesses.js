@@ -3,10 +3,11 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const Guess = require("../models/Guess");
+const webSocketAuthentication = require('../middleware/webSocketAuthentication');
 
 // Delete a guess with given DrawRound id and number
-// TODO: add socket id validation
-router.delete('/', [
+router.delete('/', webSocketAuthentication, [
+    // Validation
     body('round_id').exists(),
     body('number').isInt()
 ], async (req, res) => {
@@ -20,7 +21,7 @@ router.delete('/', [
 
     try {
         // Try to delete given guess
-        const response = await Guess.deleteOne({ draw_round: req.body.round_id, number: req.body.number }).exec();
+        const response = await Guess.deleteOne({ draw_round: req.body.round_id, number: req.body.number, socket_id: req.socketId }).exec();
 
         // Return 404 if guess was not deleted
         if (response.deletedCount !== 1) return res.sendStatus(404);
@@ -33,7 +34,7 @@ router.delete('/', [
 });
 
 // Create guess
-router.post('/', async (req, res) => {
+router.post('/', webSocketAuthentication, async (req, res) => {
     try {
         const drawRoundId = req.body.draw_round;
         const number = req.body.number;
@@ -49,7 +50,7 @@ router.post('/', async (req, res) => {
         const newGuess = new Guess({
             draw_round: drawRoundId,
             number: number,
-            socket_id: "test"
+            socket_id: req.socketId
         });
         await newGuess.save();
         res.status(200).send("Guess created!");
