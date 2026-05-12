@@ -1,4 +1,4 @@
-const { verifySocket } = require('../src/services/socket.js');
+const { verifySocket } = require('../services/socket.js');
 
 // WebSocket authentication middleware
 const webSocketAuthentication = (req, res, next) => {
