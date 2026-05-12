@@ -4,6 +4,8 @@ const crypto = require('crypto');
 // Map object for storing WebSocket connections paired with randomly generated tokens
 const connections = new Map();
 
+let io;
+
 // Verify WebSocket by checking if connections map contains given key-value pair
 const verifySocket = (socketId, token) => {
     // Return false if either of given parameters is undefined
@@ -29,7 +31,7 @@ const generateRandomizedToken = () => {
 
 // Start WebSocket server and start listening for messages
 const initializeSocket = (server) => {
-    const io = new Server(server);
+    io = new Server(server);
 
     io.on('connection', (socket) => {
         // Log socket id connected
@@ -50,7 +52,41 @@ const initializeSocket = (server) => {
     });
 };
 
+// Emit Websocket message to every client excluding who made the guess of guess addition
+const broadcastGuessAddition = (roundId, socketId, number) => {
+    // Get WebSocket with given id
+    const socket = io.sockets.sockets.get(socketId)
+
+    if (!socket) return;
+
+    guessData = {
+        "roundId": roundId,
+        "socketId": socketId,
+        "number": number
+    };
+
+    socket.broadcast.emit("guess_addition", guessData);
+}
+
+// Emit Websocket message to every client excluding who made the guess of guess removal
+const broadcastGuessRemoval = (roundId, socketId, number) => {
+    // Get WebSocket with given id
+    const socket = io.sockets.sockets.get(socketId)
+
+    if (!socket) return;
+
+    guessData = {
+        "roundId": roundId,
+        "number": number
+    };
+
+    socket.broadcast.emit("guess_addition", guessData);
+};
+
+
 module.exports = { 
     initializeSocket,
-    verifySocket 
+    verifySocket,
+    broadcastGuessAddition,
+    broadcastGuessRemoval
 };

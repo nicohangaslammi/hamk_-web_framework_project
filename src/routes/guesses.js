@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 
 const Guess = require("../models/Guess");
 const webSocketAuthentication = require('../middleware/webSocketAuthentication');
+const { broadcastGuessAddition, broadcastGuessRemoval } = require('../services/socket.js');
 
 // Delete a guess with given DrawRound id and number
 router.delete('/', webSocketAuthentication, [
@@ -25,6 +26,9 @@ router.delete('/', webSocketAuthentication, [
 
         // Return 404 if guess was not deleted
         if (response.deletedCount !== 1) return res.sendStatus(404);
+
+        // Broadcast a WebSocket message to clients
+        broadcastGuessRemoval(req.body.round_id, req.socketId, req.body.number);
 
         res.sendStatus(200);
     } catch (error) {
@@ -53,6 +57,10 @@ router.post('/', webSocketAuthentication, async (req, res) => {
             socket_id: req.socketId
         });
         await newGuess.save();
+
+        // Broadcast a WebSocket message to clients
+        broadcastGuessAddition(newGuess._id, req.socketId, req.body.number);
+
         res.status(200).send("Guess created!");
     }
     catch (error) {

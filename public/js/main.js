@@ -27,6 +27,14 @@ socket.on("auth_token", (token) => {
   console.log("Received token:", token);
 });
 
+socket.on("guess_addition", guessData => {
+    console.log("addition", guessData);
+});
+
+socket.on("guess_removal", guessData => {
+    console.log("removal", guessData)
+})
+
 // When user clicks on a guess button
 const handleGuessClick = (event) => {
     const guessButtonElement = event.target;
