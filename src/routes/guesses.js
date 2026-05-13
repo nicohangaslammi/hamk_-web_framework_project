@@ -59,7 +59,7 @@ router.post('/', webSocketAuthentication, async (req, res) => {
         await newGuess.save();
 
         // Broadcast a WebSocket message to clients
-        broadcastGuessAddition(newGuess._id, req.socketId, req.body.number);
+        broadcastGuessAddition(req.body.draw_round, req.socketId, req.body.number);
 
         res.status(200).send("Guess created!");
     }
