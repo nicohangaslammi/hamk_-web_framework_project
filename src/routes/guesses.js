@@ -9,7 +9,7 @@ const { broadcastGuessAddition, broadcastGuessRemoval } = require('../services/s
 // Delete a guess with given DrawRound id and number
 router.delete('/', webSocketAuthentication, [
     // Validation
-    body('round_id').exists(),
+    body('draw_round').exists(),
     body('number').isInt()
 ], async (req, res) => {
     const errors = validationResult(req);
@@ -22,13 +22,17 @@ router.delete('/', webSocketAuthentication, [
 
     try {
         // Try to delete given guess
-        const response = await Guess.deleteOne({ draw_round: req.body.round_id, number: req.body.number, socket_id: req.socketId }).exec();
+        const response = await Guess.deleteOne({
+            draw_round: req.body.draw_round,
+            number: req.body.number,
+            socket_id: req.socketId
+        }).exec();
 
         // Return 404 if guess was not deleted
         if (response.deletedCount !== 1) return res.sendStatus(404);
 
         // Broadcast a WebSocket message to clients
-        broadcastGuessRemoval(req.body.round_id, req.socketId, req.body.number);
+        broadcastGuessRemoval(req.body.draw_round, req.socketId, req.body.number);
 
         res.sendStatus(200);
     } catch (error) {
