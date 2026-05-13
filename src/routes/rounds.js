@@ -10,6 +10,7 @@ const Guess = require('../models/Guess');
 
 // Socket
 const { broadcastDrawOpen } = require('../services/socket');
+const { broadcastDrawCompleted } = require('../services/socket');
 
 // Create an active draw round as admin
 router.post('/', apiKeyAuthentication, async (req,res) => {
@@ -76,8 +77,25 @@ router.patch('/', apiKeyAuthentication, async (req,res) => {
         // Close draw
         round.status = 'suljettu';
         await round.save();
-        res.send("Draw completed!");
+
+        // Get round id
+        const roundId = round._id;
+        // Find winning guess
+        const winningGuess = await Guess.findOne({
+            draw_round: roundId,
+            number: winningNumber
+        });
+        // Get winning socket id
+        let winningSocketId = null;
+        // Check if winning guess exists
+        if (winningGuess) {
+            // Save winning socket id
+            winningSocketId = winningGuess.socket_id; 
         }
+        // Broadcast completed draw to clients
+        broadcastDrawCompleted(roundId, winningNumber, winningSocketId);
+        res.send("Draw completed!");
+    }
     catch (error) {
         console.error(error);
         res.status(500).json({
