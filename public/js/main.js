@@ -34,6 +34,19 @@ socket.on("auth_token", (token) => {
     clientInfo.token = token;
 });
 
+// Server sends a WebSocket message when draw round is opened
+socket.on("draw_open", data => {
+    console.log("Draw opened:", data);
+    // Get view elements
+    const drawClosedView = document.getElementById("draw-closed-view");
+    const drawOpenView = document.getElementById("draw-open-view");
+    // Hide closed draw view
+    drawClosedView.style.display = "none";
+    // Show open draw view
+    drawOpenView.style.display = "block";
+
+});
+
 // Server sends a WebSocket message when other user makes a guess
 socket.on("guess_addition", data => {
     console.log("addition", data);
