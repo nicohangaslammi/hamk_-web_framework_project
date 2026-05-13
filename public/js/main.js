@@ -7,7 +7,7 @@ const ROUND_GUESS_NUMBER_COUNT = 20;
 // key is the guess number, value is an object with properties 'state' and 'owner'
 // 'state' is either 'reserved-me' or 'reserved-other'
 // 'owner' has the socked id of client who made the guess
-// Ex. guessData.get(2) = { 'state': 'reserved-me', owner: 'V8uOTo85UY9k4BdMAAAD'}
+// Ex. guessData.get(2) = { 'state': 'reserved-me', 'owner': 'V8uOTo85UY9k4BdMAAAD'};
 const guessData = new Map();
 
 // ONLY for debugging purposes. Remove when WebSocket calls updating guess states is implemented.
@@ -20,6 +20,8 @@ const guessButtonsElement = document.getElementById("guess-buttons");
 let guessButtonsElementArray = new Array();
 
 // Object storing socket_id and token for authentication
+// Ex. what clientInfo looks like after WebSocket handshake
+// clientInfo = { 'socket_id': 'V8uOTo85UY9k4BdMAAAD', 'token': 'ni8-X9BE5GoZnTcfAAAD' };
 let clientInfo = {};
 
 // When WebSocket connection is established
