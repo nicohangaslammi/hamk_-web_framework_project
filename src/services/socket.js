@@ -83,10 +83,24 @@ const broadcastGuessRemoval = (roundId, socketId, number) => {
     socket.broadcast.emit("guess_addition", guessData);
 };
 
+// Emit Websocket message to every client when draw round is open
+const broadcastDrawOpen = (roundId, status) => {
+    // Return if socket.io is not initialized
+    if (!io) return; 
+    // Create message object for event
+    const drawOpenMessage = {
+        "roundId": roundId,
+        "status": status
+    };
+    // Send event to every client connected
+    io.emit("draw_open", drawOpenMessage);
+}
+
 
 module.exports = { 
     initializeSocket,
     verifySocket,
     broadcastGuessAddition,
-    broadcastGuessRemoval
+    broadcastGuessRemoval,
+    broadcastDrawOpen
 };

@@ -8,6 +8,9 @@ const apiKeyAuthentication = require("../middleware/apiKeyAuthentication");
 const DrawRound = require('../models/DrawRound');
 const Guess = require('../models/Guess');
 
+// Socket
+const { broadcastDrawOpen } = require('../services/socket');
+
 // Create an active draw round as admin
 router.post('/', apiKeyAuthentication, async (req,res) => {
     try {
@@ -20,6 +23,8 @@ router.post('/', apiKeyAuthentication, async (req,res) => {
             draw_time: new Date()
         });
         await newRound.save();
+        // Broadcast a websocket message to clients
+        broadcastDrawOpen(newRound._id, newRound.status);
         res.send("Draw created!");
         }
     catch (error) {
