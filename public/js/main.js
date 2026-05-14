@@ -68,8 +68,7 @@ socket.on("guess_removal", data => {
 
 // When user clicks on a guess button
 const handleGuessClick = (event) => {
-    const guessButtonElement = event.target;
-    console.log(guessButtonElement.value);
+    
 }
 
 // Create guess button elements
