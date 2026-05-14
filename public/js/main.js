@@ -7,19 +7,19 @@ const ROUND_GUESS_NUMBER_COUNT = 20;
 // key is the guess number, value is an object with properties 'state' and 'owner'
 // 'state' is either 'reserved-me' or 'reserved-other'
 // 'owner' has the socked id of client who made the guess
-// Ex. guessData.get(2) = { 'state': 'reserved-me', owner: 'V8uOTo85UY9k4BdMAAAD'}
+// Ex. guessData.get(2) = { 'state': 'reserved-me', 'owner': 'V8uOTo85UY9k4BdMAAAD'};
 const guessData = new Map();
-
-// ONLY for debugging purposes. Remove when WebSocket calls updating guess states is implemented.
-guessData.set(2, { state: "reserved-me", owner: "test"});
-guessData.set(9, { state: "reserved-other", owner: "test2" });
 
 // Container element for guess buttons
 const guessButtonsElement = document.getElementById("guess-buttons");
 // Array of guess button elements
 let guessButtonsElementArray = new Array();
+// Current active draw round ID
+let drawRoundId;
 
 // Object storing socket_id and token for authentication
+// Ex. what clientInfo looks like after WebSocket handshake
+// clientInfo = { 'socket_id': 'V8uOTo85UY9k4BdMAAAD', 'token': 'ni8-X9BE5GoZnTcfAAAD' };
 let clientInfo = {};
 
 // When WebSocket connection is established
@@ -107,5 +107,30 @@ const updateGuessButtonElements = () => {
     });
 }
 
-createGuessButtonElements();
-updateGuessButtonElements();
+// Get active round with API call. Only called on when page loads for the first time.
+const getActiveRound = async () => {
+    try {
+        const response = await axios.get('/api/rounds');
+
+        // Create guess button elements
+        createGuessButtonElements();
+
+        // Store active round id
+        drawRoundId = response.data._id;
+
+        // Store active round guesses to guessData map
+        response.data.guesses.forEach( guess => {
+            data = {
+                state: 'reserved-other',
+                owner: guess.socket_id
+            };
+            guessData.set(guess.number, data);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    updateGuessButtonElements();
+}
+
+getActiveRound();
