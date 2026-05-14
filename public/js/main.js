@@ -37,6 +37,7 @@ socket.on("auth_token", (token) => {
 // Server sends a WebSocket message when draw round is opened
 socket.on("draw_open", data => {
     console.log("Draw opened:", data);
+    
     // Get view elements
     const drawClosedView = document.getElementById("draw-closed-view");
     const drawOpenView = document.getElementById("draw-open-view");
@@ -104,7 +105,7 @@ const handleGuessClick = async (event) => {
 // If number is reserved by me, remove guess
 else if (guess.state === "reserved-me") {
     const requestBody = {
-        round_id: drawRoundId,
+        draw_round: drawRoundId,
         number: number
     };
     try {
