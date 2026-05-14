@@ -80,7 +80,7 @@ const broadcastGuessRemoval = (roundId, socketId, number) => {
         "number": number
     };
 
-    socket.broadcast.emit("guess_addition", guessData);
+    socket.broadcast.emit("guess_removal", guessData);
 };
 
 // Emit Websocket message to every client when draw round is open
@@ -102,6 +102,7 @@ const broadcastDrawCompleted = (roundId, winningNumber, winningSocketId) => {
     if (!io) return; 
     // Create message object for event
     const drawCompletedMessage = {
+        "roundId": roundId,
         "winningNumber": winningNumber,
         "winningSocketId": winningSocketId
     };

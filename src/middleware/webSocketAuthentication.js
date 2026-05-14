@@ -4,8 +4,10 @@ const { verifySocket } = require('../services/socket.js');
 const webSocketAuthentication = (req, res, next) => {
     // Get socket id
     const socketId = req.headers['x-socket-id'];
-    // Get token
-    const token = req.headers.authorization;
+    // Get authorization header
+    const authorization = req.headers.authorization;
+    // Remove Bearer from token
+    const token = authorization.split(" ")[1];
     // Verify socket id and token
     const isValid = verifySocket(socketId, token);
     // Return 401 if not verified

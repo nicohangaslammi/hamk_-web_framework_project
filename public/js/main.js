@@ -62,13 +62,33 @@ socket.on("guess_addition", data => {
 socket.on("guess_removal", data => {
     console.log("removal", data);
 
-    guessData.remove(parseInt(data.number));
+    guessData.delete(parseInt(data.number));
     updateGuessButtonElements();
 })
 
 // When user clicks on a guess button
-const handleGuessClick = (event) => {
-    
+const handleGuessClick = async (event) => {
+    // Get selected number from clicked button
+    const number = parseInt(event.target.value);
+    // Create request body
+    const requestBody = {
+        draw_round: drawRoundId,
+        number: number
+    };
+    // Create request header for authentication
+    const config = {
+        headers: {
+            'Authorization': 'Bearer ' + clientInfo.token,
+            'x-socket-id': clientInfo.socket_id
+        }
+    };
+    try {
+        // Send POST request
+        const response = await axios.post('/api/guesses', requestBody, config);
+        console.log(response.data);
+    } catch(error) {
+        console.log(error);
+    }
 }
 
 // Create guess button elements
@@ -93,7 +113,7 @@ const createGuessButtonElements = () => {
 const updateGuessButtonElements = () => {
     guessButtonsElementArray.forEach((buttonElement) => {
         const number = parseInt(buttonElement.value);
-        guess = guessData.get(number);
+        const guess = guessData.get(number);
 
         // Remove current state
         buttonElement.classList.remove("open", "reserved-me", "reserved-other");
@@ -120,7 +140,7 @@ const getActiveRound = async () => {
 
         // Store active round guesses to guessData map
         response.data.guesses.forEach( guess => {
-            data = {
+            const data = {
                 state: 'reserved-other',
                 owner: guess.socket_id
             };
