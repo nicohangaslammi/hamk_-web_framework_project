@@ -70,6 +70,10 @@ socket.on("guess_removal", data => {
 const handleGuessClick = async (event) => {
     // Get selected number from clicked button
     const number = parseInt(event.target.value);
+    // Check if number is already reserved
+    const guess = guessData.get(number);
+    // Send request if number is available
+    if (!guess) {
     // Create request body
     const requestBody = {
         draw_round: drawRoundId,
@@ -85,11 +89,45 @@ const handleGuessClick = async (event) => {
     try {
         // Send POST request
         const response = await axios.post('/api/guesses', requestBody, config);
-        console.log(response.data);
+        // Update button if request succeeds
+        if (response.status === 200) {
+            guessData.set(number, {
+                state: "reserved-me",
+                owner: clientInfo.socket_id
+            });
+            updateGuessButtonElements();
+        }
     } catch(error) {
         console.log(error);
+        }
     }
-}
+// If number is reserved by me, remove guess
+else if (guess.state === "reserved-me") {
+    const requestBody = {
+        round_id: drawRoundId,
+        number: number
+    };
+    try {
+        // Send DELETE request
+        const response = await axios.delete('/api/guesses', {
+        headers: {
+            'Authorization': 'Bearer ' + clientInfo.token,
+            'x-socket-id': clientInfo.socket_id
+        }, 
+        data: requestBody
+    }); 
+    if (response.status === 200) {
+        guessData.delete(number);
+        updateGuessButtonElements();
+    }
+    } catch(error) {
+        console.log(error);
+        }
+    }
+    else {
+        console.log("Number is already reserved."); 
+    }
+};
 
 // Create guess button elements
 const createGuessButtonElements = () => {
