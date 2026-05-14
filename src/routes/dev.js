@@ -43,4 +43,18 @@ router.post('/add_dummy_guesses_to_active_round/:amount', async (req, res) => {
     }
 });
 
+// Delete every guess
+router.delete('/delete_all_guesses', async (req, res) => {
+    try {
+        const response = await Guess.deleteMany({});
+
+        if (response.acknowledged) return res.sendStatus(200);
+
+        res.sendStatus(500);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+});
+
 module.exports = router;

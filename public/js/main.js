@@ -75,33 +75,34 @@ const handleGuessClick = async (event) => {
     const guess = guessData.get(number);
     // Send request if number is available
     if (!guess) {
-    // Create request body
-    const requestBody = {
-        draw_round: drawRoundId,
-        number: number
-    };
-    // Create request header for authentication
-    const config = {
-        headers: {
-            'Authorization': 'Bearer ' + clientInfo.token,
-            'x-socket-id': clientInfo.socket_id
-        }
-    };
-    try {
-        // Send POST request
-        const response = await axios.post('/api/guesses', requestBody, config);
-        // Update button if request succeeds
-        if (response.status === 200) {
-            guessData.set(number, {
-                state: "reserved-me",
-                owner: clientInfo.socket_id
-            });
-            updateGuessButtonElements();
-        }
-    } catch(error) {
-        console.log(error);
+        // Create request body
+        const requestBody = {
+            draw_round: drawRoundId,
+            number: number
+        };
+        // Create request header for authentication
+        const config = {
+            headers: {
+                'Authorization': 'Bearer ' + clientInfo.token,
+                'x-socket-id': clientInfo.socket_id
+            }
+        };
+        try {
+            // Send POST request
+            const response = await axios.post('/api/guesses', requestBody, config);
+            // Update button if request succeeds
+            if (response.status === 200) {
+                guessData.set(number, {
+                    state: "reserved-me",
+                    owner: clientInfo.socket_id
+                });
+                updateGuessButtonElements();
+            }
+        } catch(error) {
+            console.log(error);
         }
     }
+<<<<<<< HEAD
 // If number is reserved by me, remove guess
 else if (guess.state === "reserved-me") {
     const requestBody = {
@@ -123,6 +124,29 @@ else if (guess.state === "reserved-me") {
     }
     } catch(error) {
         console.log(error);
+=======
+    // If number is reserved by me, remove guess
+    else if (guess.state === "reserved-me") {
+        const requestBody = {
+            draw_round: drawRoundId,
+            number: number
+        };
+        try {
+            // Send DELETE request
+            const response = await axios.delete('/api/guesses', {
+                headers: {
+                    'Authorization': 'Bearer ' + clientInfo.token,
+                    'x-socket-id': clientInfo.socket_id
+                }, 
+                data: requestBody
+            }); 
+            if (response.status === 200) {
+                guessData.delete(number);
+                updateGuessButtonElements();
+            }
+        } catch(error) {
+            console.log(error);
+>>>>>>> bded396bea6baef74b91c87948c41f8665f8440b
         }
     }
     else {
