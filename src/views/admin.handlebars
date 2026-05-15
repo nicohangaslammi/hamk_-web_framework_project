@@ -1,18 +1,22 @@
 <section class="admin-panel">
     <h1>Admin Panel</h1>
 
-    <label for="api-key">Enter API key</label>
+    <label for="api-key">Enter API key: </label>
 
     <input type="password" id="api-key" name="api-key">
 
-    <button id="open-draw-button">
-        Open draw
+    <button id="create-draw-button">
+        Create draw
     </button>
 
     <button id="complete-draw-button">
         Complete draw
     </button>
+
+    <div id="admin-info"></div>
+
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/admin.js"></script>
 
