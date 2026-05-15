@@ -28,6 +28,11 @@ app.get('/', (req,res) => {
     res.render("home");
 });
 
+// Admin panel
+app.get('/admin', (req, res) => {
+    res.render('admin');
+});
+
 // Draw is closed
 app.get('/draw-closed', (req,res) => {
     res.render('draw-closed');
