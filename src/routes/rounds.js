@@ -18,7 +18,7 @@ const ROUND_GUESS_NUMBER_COUNT = 20;
 // Create an active draw round as admin
 router.post('/', apiKeyAuthentication, async (req,res) => {
     try {
-        const activeRound = await DrawRound.findOne({ status: 'auki' });
+        const activeRound = await DrawRound.findOne({ status: 'open' });
         if (activeRound) {
             return res.status(400).send("Draw is already running!");
         }
@@ -43,7 +43,7 @@ router.post('/', apiKeyAuthentication, async (req,res) => {
 router.get('/', async (req,res) => {
     try {
         // Find active round and return 404 if round was not found
-        const activeRound = await DrawRound.findOne({ status: "auki" })
+        const activeRound = await DrawRound.findOne({ status: "open" })
             .select("status created_at")
             .lean()
             .exec();
@@ -68,7 +68,7 @@ router.get('/', async (req,res) => {
 // Start draw as admin
 router.patch('/', apiKeyAuthentication, async (req,res) => {
     try {
-        const round = await DrawRound.findOne({ status: 'auki' });
+        const round = await DrawRound.findOne({ status: 'open' });
         if (!round) {
             return res.sendStatus(404);
         }
@@ -78,7 +78,7 @@ router.patch('/', apiKeyAuthentication, async (req,res) => {
         // Draw execution date
         round.draw_time = new Date();
         // Close draw
-        round.status = 'suljettu';
+        round.status = 'closed';
         await round.save();
 
         // Get round id

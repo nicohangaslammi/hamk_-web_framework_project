@@ -17,7 +17,7 @@ router.delete('/', webSocketAuthentication, [
 
     // Check if given draw round is open. Return if not.
     // 410 response code = Gone
-    const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "auki" });
+    const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "open" });
     if (!drawRound) return res.sendStatus(410);
 
     // Return if validation does not succeed
@@ -54,7 +54,7 @@ router.post('/', webSocketAuthentication, async (req, res) => {
 
         // Check if given draw round is open. Return if not.
         // 410 response code = Gone
-        const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "auki" });
+        const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "open" });
         if (!drawRound) return res.sendStatus(410);
 
         const number = req.body.number;

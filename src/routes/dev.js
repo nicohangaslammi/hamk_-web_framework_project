@@ -17,7 +17,7 @@ router.post('/add_dummy_guesses_to_active_round/:amount', async (req, res) => {
 
     try {
         // Find active round and return 404 if round was not found
-        const activeRound = await DrawRound.findOne({ status: 'auki' }).exec();
+        const activeRound = await DrawRound.findOne({ status: 'open' }).exec();
         if (!activeRound) return res.sendStatus(404);
 
         // Create array of dummy guesses with

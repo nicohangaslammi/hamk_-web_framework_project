@@ -4,7 +4,7 @@ const drawRoundSchema = new mongoose.Schema ({
     // Status of the draw
     status: {
         type: String,
-        enum: ['auki', 'suljettu'],
+        enum: ['open', 'closed'],
         required: true
     },
     // Winning number
