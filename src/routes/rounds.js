@@ -10,7 +10,7 @@ const Guess = require('../models/Guess');
 
 // Socket
 const { broadcastDrawOpen } = require('../services/socket');
-const { broadcastDrawCompleted } = require('../services/socket');
+const { broadcastDrawComplete } = require('../services/socket');
 
 // Create an active draw round as admin
 router.post('/', apiKeyAuthentication, async (req,res) => {
@@ -93,7 +93,7 @@ router.patch('/', apiKeyAuthentication, async (req,res) => {
             winningSocketId = winningGuess.socket_id; 
         }
         // Broadcast completed draw to clients
-        broadcastDrawCompleted(roundId, winningNumber, winningSocketId);
+        broadcastDrawComplete(roundId, winningNumber, winningSocketId);
         res.send("Draw completed!");
     }
     catch (error) {

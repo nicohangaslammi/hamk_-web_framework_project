@@ -97,17 +97,17 @@ const broadcastDrawOpen = (roundId, status) => {
 }
 
 // Emit Websocket message to every client when draw round is completed
-const broadcastDrawCompleted = (roundId, winningNumber, winningSocketId) => {
+const broadcastDrawComplete = (roundId, winningNumber, winningSocketId) => {
     // Return if socket.io is not initialized
     if (!io) return; 
     // Create message object for event
-    const drawCompletedMessage = {
+    const drawCompleteMessage = {
         "roundId": roundId,
         "winningNumber": winningNumber,
         "winningSocketId": winningSocketId
     };
     // Send event to every client connected
-    io.emit("draw_completed", drawCompletedMessage);
+    io.emit("draw_complete", drawCompleteMessage);
 }
 
 
@@ -117,5 +117,5 @@ module.exports = {
     broadcastGuessAddition,
     broadcastGuessRemoval,
     broadcastDrawOpen,
-    broadcastDrawCompleted
+    broadcastDrawComplete
 };

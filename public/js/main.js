@@ -1,4 +1,5 @@
 const socket = io();
+import RoundState from './RoundState.js';
 
 // Placeholder amount of guesses in a draw round. May be changed dynamically in the future
 const ROUND_GUESS_NUMBER_COUNT = 20;
@@ -16,6 +17,8 @@ const guessButtonsElement = document.getElementById("guess-buttons");
 let guessButtonsElementArray = new Array();
 // Current active draw round ID
 let drawRoundId;
+// Round state (open/closed). Bind callback functions when the state changes
+const roundState = new RoundState(false, onRoundStateChange);
 
 // Object storing socket_id and token for authentication
 // Ex. what clientInfo looks like after WebSocket handshake
@@ -37,15 +40,19 @@ socket.on("auth_token", (token) => {
 // Server sends a WebSocket message when draw round is opened
 socket.on("draw_open", data => {
     console.log("Draw opened:", data);
-    
-    // Get view elements
-    const drawClosedView = document.getElementById("draw-closed-view");
-    const drawOpenView = document.getElementById("draw-open-view");
-    // Hide closed draw view
-    drawClosedView.style.display = "none";
-    // Show open draw view
-    drawOpenView.style.display = "block";
 
+    // Change active round id
+    drawRoundId = data.roundId;
+
+    // Clear guessData map. Round just started so we can assume no guesses has been made
+    guessData.clear();
+
+    roundState.isOpen = true;
+});
+
+socket.on("draw_complete", data => {
+    console.log("Draw completed:", data);
+    roundState.isOpen = false;
 });
 
 // Server sends a WebSocket message when other user makes a guess
@@ -99,6 +106,10 @@ const handleGuessClick = async (event) => {
                 updateGuessButtonElements();
             }
         } catch(error) {
+            if (error.status === 410) {
+                console.error("round is closed");
+                return;
+            }
             console.log(error);
         }
     }
@@ -122,6 +133,10 @@ const handleGuessClick = async (event) => {
                 updateGuessButtonElements();
             }
         } catch(error) {
+            if (error.status === 410) {
+                console.error("round is closed");
+                return;
+            }
             console.log(error);
         }
     }
@@ -145,7 +160,8 @@ const createGuessButtonElements = () => {
         guessButtonsElementArray.push(guessButton);
     }
 
-    guessButtonsElement.appendChild(fragment);
+    guessButtonsElement.replaceChildren(fragment);
+    updateGuessButtonElements();
 }
 
 // Update guess button element classes
@@ -185,11 +201,42 @@ const getActiveRound = async () => {
             };
             guessData.set(guess.number, data);
         });
+
+        roundState.isOpen = true;
     } catch (error) {
-        console.error(error);
+        // No active round was found
+        if (error.status === 404) {
+            console.log("No active round was found");
+            roundState.isOpen = false;
+        } else {
+            console.error(error);
+        }
+    }
+}
+
+// Callback function that gets called when roundState.isOpen value changes
+function onRoundStateChange(isOpen) {
+    console.log("Round state changed: is open = " + isOpen);
+
+    // Get view elements
+    const drawClosedView = document.getElementById("draw-closed-view");
+    const drawOpenView = document.getElementById("draw-open-view");
+
+    if (isOpen) {
+        // Hide closed draw view
+        drawClosedView.style.display = "none";
+        // Show open draw view
+        drawOpenView.style.display = "block";
+
+        createGuessButtonElements();
     }
 
-    updateGuessButtonElements();
+    else {
+        // Hide closed draw view
+        drawClosedView.style.display = "block";
+        // Show open draw view
+        drawOpenView.style.display = "none";
+    }
 }
 
 getActiveRound();
