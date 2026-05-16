@@ -12,6 +12,9 @@ const Guess = require('../models/Guess');
 const { broadcastDrawOpen } = require('../services/socket');
 const { broadcastDrawComplete } = require('../services/socket');
 
+// Placeholder static amount of guess numbers in a draw round
+const ROUND_GUESS_NUMBER_COUNT = 20;
+
 // Create an active draw round as admin
 router.post('/', apiKeyAuthentication, async (req,res) => {
     try {
@@ -70,7 +73,7 @@ router.patch('/', apiKeyAuthentication, async (req,res) => {
             return res.sendStatus(404);
         }
         // Random winning number 
-        let winningNumber = Math.floor((Math.random() * 100) + 1);
+        let winningNumber = Math.floor((Math.random() * ROUND_GUESS_NUMBER_COUNT) + 1);
         round.winning_number = winningNumber;
         // Draw execution date
         round.draw_time = new Date();
