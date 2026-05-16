@@ -14,6 +14,11 @@ router.delete('/', webSocketAuthentication, [
 ], async (req, res) => {
     const errors = validationResult(req);
 
+    // Check if given draw round is open. Return if not.
+    // 410 response code = Gone
+    const drawRound = await Round.findOne({ _id: req.body.draw_round, status: "auki" });
+    if (!drawRound) return res.sendStatus(410);
+
     // Return if validation does not succeed
     if (!errors.isEmpty()) {
         console.log(errors)
