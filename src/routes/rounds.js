@@ -23,7 +23,7 @@ router.post('/', apiKeyAuthentication, async (req,res) => {
             return res.status(400).send("Draw is already running!");
         }
         const newRound = new DrawRound({
-            status: 'auki',
+            status: 'open',
             draw_time: new Date()
         });
         await newRound.save();
