@@ -57,4 +57,18 @@ router.delete('/delete_all_guesses', async (req, res) => {
     }
 });
 
+// Delete every draw round
+router.delete('/delete_all_rounds', async (req, res) => {
+    try {
+        const response = await DrawRound.deleteMany({});
+
+        if (response.acknowledged) return res.sendStatus(200);
+
+        res.sendStatus(500);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+});
+
 module.exports = router;
