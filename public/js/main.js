@@ -1,5 +1,6 @@
 const socket = io();
 import RoundState from './RoundState.js';
+import { initializeModals, showModalWin, showModalLoss } from './modalController.js';
 
 // Placeholder amount of guesses in a draw round. May be changed dynamically in the future
 const ROUND_GUESS_NUMBER_COUNT = 20;
@@ -53,6 +54,9 @@ socket.on("draw_open", data => {
 socket.on("draw_complete", data => {
     console.log("Draw completed:", data);
     roundState.isOpen = false;
+
+    if (data.winningSocketId === clientInfo.socket_id) showModalWin(data.winningNumber);
+    else showModalLoss(data.winningNumber);
 });
 
 // Server sends a WebSocket message when other user makes a guess
@@ -239,4 +243,5 @@ function onRoundStateChange(isOpen) {
     }
 }
 
+initializeModals();
 getActiveRound();
