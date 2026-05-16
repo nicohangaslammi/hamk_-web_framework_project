@@ -1,6 +1,7 @@
 const socket = io();
 import RoundState from './RoundState.js';
 import { initializeModals, showModalWin, showModalLoss } from './modalController.js';
+import { announceMessage } from './screenReader.js';
 
 // Placeholder amount of guesses in a draw round. May be changed dynamically in the future
 const ROUND_GUESS_NUMBER_COUNT = 20;
@@ -41,6 +42,7 @@ socket.on("auth_token", (token) => {
 // Server sends a WebSocket message when draw round is opened
 socket.on("draw_open", data => {
     console.log("Draw opened:", data);
+    announceMessage("Draw opened. You can now add guesses");
 
     // Change active round id
     drawRoundId = data.roundId;
@@ -53,15 +55,22 @@ socket.on("draw_open", data => {
 
 socket.on("draw_complete", data => {
     console.log("Draw completed:", data);
+
     roundState.isOpen = false;
 
-    if (data.winningSocketId === clientInfo.socket_id) showModalWin(data.winningNumber);
-    else showModalLoss(data.winningNumber);
+    if (data.winningSocketId === clientInfo.socket_id) {
+        showModalWin(data.winningNumber);
+        announceMessage("Draw completed. You won with a number " + data.winningNumber);
+    } else {
+        showModalLoss(data.winningNumber);
+        announceMessage("Draw completed. You lost. Winning number was " + data.winningNumber);
+    }
 });
 
 // Server sends a WebSocket message when other user makes a guess
 socket.on("guess_addition", data => {
     console.log("addition", data);
+    announceMessage(`Guess ${data.number} was reserved by other user`);
 
     guessData.set(parseInt(data.number), {
         state: "reserved-other",
@@ -73,6 +82,7 @@ socket.on("guess_addition", data => {
 // Server sends a WebSocket message when other user removes a guess
 socket.on("guess_removal", data => {
     console.log("removal", data);
+    announceMessage(`Guess ${data.number} is open for reservation`);
 
     guessData.delete(parseInt(data.number));
     updateGuessButtonElements();
@@ -103,6 +113,7 @@ const handleGuessClick = async (event) => {
             const response = await axios.post('/api/guesses', requestBody, config);
             // Update button if request succeeds
             if (response.status === 200) {
+                announceMessage(`You reserved guess ${number}`);
                 guessData.set(number, {
                     state: "reserved-me",
                     owner: clientInfo.socket_id
@@ -133,6 +144,7 @@ const handleGuessClick = async (event) => {
                 data: requestBody
             }); 
             if (response.status === 200) {
+                announceMessage(`You removed guess ${number}`);
                 guessData.delete(number);
                 updateGuessButtonElements();
             }
@@ -145,7 +157,8 @@ const handleGuessClick = async (event) => {
         }
     }
     else {
-        console.log("Number is already reserved."); 
+        console.log("Number is already reserved.");
+        announcer.announceMessage(`Number ${number} is already reserved`)
     }
 };
 
@@ -154,7 +167,7 @@ const createGuessButtonElements = () => {
     const fragment = document.createDocumentFragment();
 
     // Create button elements and bind eventlisteners
-    for (let i = 0; i < ROUND_GUESS_NUMBER_COUNT; i++) {
+    for (let i = 1; i <= ROUND_GUESS_NUMBER_COUNT; i++) {
         const guessButton = document.createElement('button');
         guessButton.textContent = i;
         guessButton.value = i;
@@ -180,8 +193,11 @@ const updateGuessButtonElements = () => {
         // Add state css class based on state in guessStates map
         if (!guess) {
             buttonElement.classList.add("open");
+            buttonElement.setAttribute('aria-label', `Guess ${number} open for reservation`);
         } else {
             buttonElement.classList.add(guess.state);
+            if (guess.state === "reserved-me") buttonElement.setAttribute("aria-label", `Guess ${number} reserved by you`);
+            if (guess.state === "reserved-other") buttonElement.setAttribute('aria-label', `Guess ${number} reserved by another user`);
         }
     });
 }

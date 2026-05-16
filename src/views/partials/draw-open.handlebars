@@ -1,11 +1,16 @@
 <div class="draw-open-container">
-    <h2>Draw</h2>
-    <img src="/images/draw_wheel.png" alt="draw wheel">
-    <p>
+    <h1>Number draw</h1>
+    <p class="toggle-container">
+        <label for="colourblind-toggle">Colorblind Mode</label>
+        <input type="checkbox" id="colorblind-toggle" role="switch" aria-checked="false">
+    </p>
+    <img src="/images/draw_wheel.png" aria-hidden="true">
+    <p aria-hidden="true">
         <small>Placeholder wheel, not functional at the moment</small>
     </p>
-    <p>Blabla instructions how to play: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi</p>
+    <h2>How to play</h2>
+    <p>Select available numbers to enter the draw. You may reserve as many numbers as you want, but each number can only be reserved by one player.</p>
+    <p aria-hidden="true">Meanings of each button color: Yellow - Open, Green - Reserved by you, Red - Taken by another player</p>
 
     {{!-- Container for generated guess button elements --}}
     <div id="guess-buttons"></div>

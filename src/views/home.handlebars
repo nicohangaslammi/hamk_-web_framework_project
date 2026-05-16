@@ -1,11 +1,11 @@
 
 <section class="home">
 
-    <section id="draw-closed-view">
+    <section id="draw-closed-view" aria-labelledby="draw-closed-heading">
         {{> draw-closed}}
     </section>
 
-    <section id="draw-open-view" style="display:none">
+    <section id="draw-open-view" aria-labelledby="draw-open-heading" style="display:none">
         {{> draw-open}}
     </section>
 
@@ -16,3 +16,4 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script type="module" src="/js/main.js"></script>
+<script src="/js/colorBlind.js"></script>

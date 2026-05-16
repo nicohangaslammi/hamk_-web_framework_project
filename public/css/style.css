@@ -49,19 +49,19 @@
     width: 90px;
     padding: 15px 0;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 35px;
 }
 
 .guess-button.reserved-other {
-    background-color: red;
+    background-color: #E57373;
 }
 
 .guess-button.open {
-    background-color: yellow;
+    background-color: #FFD54F;
 }
 
 .guess-button.reserved-me {
-    background-color: greenyellow;
+    background-color: #81C784;
 }
 
 dialog {
@@ -102,4 +102,51 @@ dialog .emoji {
 #admin-info {
     font-weight: bold;
     margin-top: 10px;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.colorblind-mode .guess-button.reserved-other {
+    background-color: #E57373;
+    background-image:
+    repeating-linear-gradient(45deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.2) 8px,
+    rgba(0, 0, 0, 0.2) 10px),
+    repeating-linear-gradient(135deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.2) 8px,
+    rgba(0, 0, 0, 0.2) 10px);
+    cursor: not-allowed;
+}
+
+.colorblind-mode .guess-button.open {
+    background-color: #FFD54F;
+    background-image: repeating-linear-gradient(0deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.2) 8px,
+    rgba(0, 0, 0, 0.2) 10px);
+}
+
+.colorblind-mode .guess-button.reserved-me {
+    background-color: #81C784;
+    background-image: repeating-linear-gradient(45deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.2) 8px,
+    rgba(0, 0, 0, 0.2) 11px);
 }
