@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const Guess = require("../models/Guess");
+const DrawRound = require("../models/DrawRound.js")
 const webSocketAuthentication = require('../middleware/webSocketAuthentication');
 const { broadcastGuessAddition, broadcastGuessRemoval } = require('../services/socket.js');
 
@@ -16,7 +17,7 @@ router.delete('/', webSocketAuthentication, [
 
     // Check if given draw round is open. Return if not.
     // 410 response code = Gone
-    const drawRound = await Round.findOne({ _id: req.body.draw_round, status: "auki" });
+    const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "auki" });
     if (!drawRound) return res.sendStatus(410);
 
     // Return if validation does not succeed
@@ -53,7 +54,7 @@ router.post('/', webSocketAuthentication, async (req, res) => {
 
         // Check if given draw round is open. Return if not.
         // 410 response code = Gone
-        const drawRound = await Round.findOne({ _id: req.body.draw_round, status: "auki" });
+        const drawRound = await DrawRound.findOne({ _id: req.body.draw_round, status: "auki" });
         if (!drawRound) return res.sendStatus(410);
 
         const number = req.body.number;
