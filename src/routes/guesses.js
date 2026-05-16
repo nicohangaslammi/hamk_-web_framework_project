@@ -45,6 +45,12 @@ router.delete('/', webSocketAuthentication, [
 router.post('/', webSocketAuthentication, async (req, res) => {
     try {
         const drawRoundId = req.body.draw_round;
+
+        // Check if given draw round is open. Return if not.
+        // 410 response code = Gone
+        const drawRound = await Round.findOne({ _id: req.body.draw_round, status: "auki" });
+        if (!drawRound) return res.sendStatus(410);
+
         const number = req.body.number;
         // Check if number is taken
         const guess = await Guess.findOne({ 
