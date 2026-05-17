@@ -12,5 +12,5 @@ export const announceMessage = (message) => {
 
     announceTimeout = setTimeout(() => {
         announcer.textContent = '';
-    });
+    }, 3000);
 }
