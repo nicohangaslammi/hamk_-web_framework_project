@@ -249,6 +249,7 @@ function onRoundStateChange(isOpen) {
         drawOpenView.style.display = "block";
 
         createGuessButtonElements();
+        drawOpenView.focus();
     }
 
     else {
@@ -256,6 +257,7 @@ function onRoundStateChange(isOpen) {
         drawClosedView.style.display = "block";
         // Show open draw view
         drawOpenView.style.display = "none";
+        drawClosedView.focus();
     }
 }
 
