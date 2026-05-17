@@ -7,19 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isColorblindMode) {
         document.body.classList.add("colorblind-mode");
         toggleSwitch.checked = true;
-        toggleSwitch.setAttribute("aria-checked", "true");
     }
 
     toggleSwitch.addEventListener("change", (e) => {
         const isActive = event.target.checked;
 
-        if (isActive) {
-            document.body.classList.add("colorblind-mode");
-        } else {
-            document.body.classList.remove("colorblind-mode");
-        }
+        // Add change-mode class
+        if (isActive) document.body.classList.add("colorblind-mode");
+        else document.body.classList.remove("colorblind-mode");
 
-        toggleSwitch.setAttribute("aria-checked", isActive.toString());
         localStorage.setItem("colorblindMode", isActive.toString());
     });
 });
