@@ -158,7 +158,7 @@ const handleGuessClick = async (event) => {
     }
     else {
         console.log("Number is already reserved.");
-        announcer.announceMessage(`Number ${number} is already reserved`)
+        announceMessage(`Number ${number} is already reserved`);
     }
 };
 
